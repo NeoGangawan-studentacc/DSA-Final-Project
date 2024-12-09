@@ -21,18 +21,11 @@ struct BSTNode {
 // Heap
 class MinHeap {
     vector<int> heap;
-    
-    void heapifyUp(int index) {
-        if (index && heap[parent(index)] > heap[index]) {
-            swap(heap[index], heap[parent(index)]);
-            heapifyUp(parent(index));
-        }
-    }
 
-    void heapifyDown(int index) {
+    void heapify(int index) {
+        int smallest = index;
         int leftChild = left(index);
         int rightChild = right(index);
-        int smallest = index;
 
         if (leftChild < size() && heap[leftChild] < heap[smallest])
             smallest = leftChild;
@@ -42,37 +35,9 @@ class MinHeap {
 
         if (smallest != index) {
             swap(heap[index], heap[smallest]);
-            heapifyDown(smallest);
+            heapify(smallest);
         }
     }
-};
-
-class maxHeap{
-    vector<int> heap;
-    
-    void heapifyUp(int index) {
-        if (index && heap[parent(index)] < heap[index]) {
-            swap(heap[index], heap[parent(index)]);
-            heapifyUp(parent(index));
-        }
-    }
-
-    void heapifyDown(int index) {
-        int leftChild = left(index);
-        int rightChild = right(index);
-        int largest = index;
-
-        if (leftChild < size() && heap[leftChild] > heap[largest])
-            largest = leftChild;
-
-        if (rightChild < size() && heap[rightChild] > heap[largest])
-            largest = rightChild;
-
-        if (largest != index) {
-            swap(heap[index], heap[largest]);
-            heapifyDown(largest);
-        }
-}
 
 public:
     int parent(int i) { return (i - 1) / 2; }
@@ -83,11 +48,110 @@ public:
     void insert(int key) {
         heap.push_back(key);
         int index = size() - 1;
-        heapifyUp(index);
+        while (index != 0 && heap[parent(index)] > heap[index]) {
+            swap(heap[index], heap[parent(index)]);
+            index = parent(index);
+        }
     }
 
     void printHeap() {
         for (int i : heap)
+            cout << i << " ";
+        cout << endl;
+        cout << endl;
+        cout << endl;
+    }
+
+    void traverseMinHeap() {
+        for (int i = 0; i < size(); ++i)
+            cout << heap[i] << " ";
+        cout << endl;
+    }
+};
+
+class MaxHeap {
+    vector<int> heap;
+
+    void heapify(int index) {
+        int largest = index;
+        int leftChild = left(index);
+        int rightChild = right(index);
+
+        if (leftChild < size() && heap[leftChild] > heap[largest])
+            largest = leftChild;
+
+        if (rightChild < size() && heap[rightChild] > heap[largest])
+            largest = rightChild;
+
+        if (largest != index) {
+            swap(heap[index], heap[largest]);
+            heapify(largest);
+        }
+    }
+
+public:
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i) { return (2 * i + 1); }
+    int right(int i) { return (2 * i + 2); }
+    int size() { return heap.size(); }
+
+    void insert(int key) {
+        heap.push_back(key);
+        int index = size() - 1;
+        while (index != 0 && heap[parent(index)] < heap[index]) {
+            swap(heap[index], heap[parent(index)]);
+            index = parent(index);
+        }
+    }
+
+    void printHeap() {
+        for (int i : heap)
+            cout << i << " ";
+        cout << endl;
+    }
+
+    void traverseMaxHeap() {
+        for (int i = 0; i < size(); ++i)
+            cout << heap[i] << " ";
+        cout << endl;
+    }
+};
+
+// Magic Potion Class
+class MagicPotion {
+    vector<int> ingredients; // The heap
+
+    void balancePotion(int index) {
+        int largest = index;
+        int leftChild = left(index);
+        int rightChild = right(index);
+
+        if (leftChild < size() && ingredients[leftChild] > ingredients[largest])
+            largest = leftChild;
+
+        if (rightChild < size() && ingredients[rightChild] > ingredients[largest])
+            largest = rightChild;
+
+        if (largest != index) {
+            swap(ingredients[index], ingredients[largest]);
+            balancePotion(largest);
+        }
+    }
+
+public:
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i) { return (2 * i + 1); }
+    int right(int i) { return (2 * i + 2); }
+    int size() { return ingredients.size(); }
+
+    void addIngredient(int key) {
+        ingredients.push_back(key);
+        int index = size() - 1;
+        balancePotion(index);
+    }
+
+    void showPotion() {
+        for (int i : ingredients)
             cout << i << " ";
         cout << endl;
     }
@@ -132,6 +196,26 @@ void postorder(TreeNode* root) {
     postorder(root->left);
     postorder(root->right);
     cout << root->data << " ";
+}
+
+// Magic Forest Functions
+TreeNode* addCreatureToForest(TreeNode* root, int data) {
+    if (!root) return new TreeNode(data);
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        TreeNode* temp = q.front();
+        q.pop();
+        if (!temp->left) {
+            temp->left = new TreeNode(data);
+            break;
+        } else q.push(temp->left);
+        if (!temp->right) {
+            temp->right = new TreeNode(data);
+            break;
+        } else q.push(temp->right);
+    }
+    return root;
 }
 
 // Binary Search Tree Functions
@@ -208,12 +292,14 @@ int main() {
     TreeNode* binaryTreeRoot = nullptr;
     BSTNode* bstRoot = nullptr;
     MinHeap minHeap;
+    MaxHeap maxHeap;
+    char cont;
     // welcome display
-    cout << ",   .     .                   .\n 
+    /*cout << ",   .     .                   .\n 
             | . |     |                   |\n 
             | ) ) ,-. | ,-. ,-. ;-.-. ,-. |\n 
             |/|/  |-' | |   | | | | | |-'  \n 
-            ' '   `-' ' `-' `-' ' ' ' `-' o\n" << endl;
+            ' '   `-' ' `-' `-' ' ' ' `-' o\n" << endl;*/
     int choice, data;
     while (true) {
         cout << "Choose Data Structure:\n1. Binary Tree\n2. Binary Search Tree\n3. Min Heap\n4. Exit\n";
@@ -225,9 +311,17 @@ int main() {
                 cout << "Binary Tree Operations:\n1. Insert\n2. Inorder Traversal\n3. Preorder Traversal\n4. Postorder Traversal\n";
                 cin >> choice;
                 if (choice == 1) {
+                    do {
                     cout << "Enter data to insert: ";
-                    cin >> data;
-                    binaryTreeRoot = insertBinaryTree(binaryTreeRoot, data);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        cin >> data;
+                        binaryTreeRoot = insertBinaryTree(binaryTreeRoot, data);
+                    }
+                    cout << "Do you want to insert more data? (y/n): ";
+                    cin >> cont;
+                    } while (cont == 'y' || cont == 'Y');
+                    
                 } else if (choice == 2) {
                     inorder(binaryTreeRoot);
                     cout << endl;
@@ -243,9 +337,17 @@ int main() {
                 cout << "Binary Search Tree Operations:\n1. Insert\n2. Inorder Traversal\n3. Preorder Traversal\n4. Postorder Traversal\n5. Search\n6. Delete\n";
                 cin >> choice;
                 if (choice == 1) {
+                    do {
                     cout << "Enter data to insert: ";
-                    cin >> data;
-                    bstRoot = insertBST(bstRoot, data);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        cin >> data;
+                        bstRoot = insertBST(bstRoot, data);
+                    }
+                    cout << "Do you want to insert more data? (y/n): ";
+                    cin >> cont;
+                    } while (cont == 'y' || cont == 'Y');
+                    
                 } else if (choice == 2) {
                     inorderBST(bstRoot);
                     cout << endl;
@@ -268,18 +370,40 @@ int main() {
                 }
                 break;
             case 3:
-                cout << "Min Heap Operations:\n1. Insert\n2. Print Heap\n";
+                cout << "Heap Operations:\n1. Min-Heap: Insert\n1. Max-Heap: Insert\n3. Min-Heap\n4. Max-Heap\n5. Print Heap\n";
                 cin >> choice;
                 if (choice == 1) {
+                    do {
                     cout << "Enter data to insert: ";
-                    cin >> data;
-                    minHeap.insert(data);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        cin >> data;
+                        minHeap.insert(data);
+                    }
+                    cout << "Do you want to insert more data? (y/n): ";
+                    cin >> cont;
+                } while (cont == 'y' || cont == 'Y');
                 } else if (choice == 2) {
+                    do {
+                    cout << "Enter data to insert: ";
+                    for (int i = 0; i < 5; i++)
+                    {
+                        cin >> data;
+                        maxHeap.insert(data);
+                    }
+                    cout << "Do you want to insert more data? (y/n): ";
+                    cin >> cont;
+                } while (cont == 'y' || cont == 'Y');  
+                } else if (choice == 3) {
+                    minHeap.traverseMinHeap();
+                } else if (choice == 4) {
+                    minHeap.printHeap();
+                } else if (choice == 5) {
                     minHeap.printHeap();
                 }
                 break;
             default:
-                cout << "Invalid choice\n";
+                cout << "Wrong choice\n";
         }
     }
     return 0;
