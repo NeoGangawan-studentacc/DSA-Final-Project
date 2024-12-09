@@ -1,3 +1,4 @@
+//will delete if downloading libraries gets tedious
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

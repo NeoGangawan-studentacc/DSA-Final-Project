@@ -45,6 +45,34 @@ class MinHeap {
             heapifyDown(smallest);
         }
     }
+};
+
+class maxHeap{
+    vector<int> heap;
+    
+    void heapifyUp(int index) {
+        if (index && heap[parent(index)] < heap[index]) {
+            swap(heap[index], heap[parent(index)]);
+            heapifyUp(parent(index));
+        }
+    }
+
+    void heapifyDown(int index) {
+        int leftChild = left(index);
+        int rightChild = right(index);
+        int largest = index;
+
+        if (leftChild < size() && heap[leftChild] > heap[largest])
+            largest = leftChild;
+
+        if (rightChild < size() && heap[rightChild] > heap[largest])
+            largest = rightChild;
+
+        if (largest != index) {
+            swap(heap[index], heap[largest]);
+            heapifyDown(largest);
+        }
+}
 
 public:
     int parent(int i) { return (i - 1) / 2; }
