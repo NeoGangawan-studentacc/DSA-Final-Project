@@ -117,45 +117,6 @@ public:
     }
 };
 
-// Magic Potion Class
-class MagicPotion {
-    vector<int> ingredients; // The heap
-
-    void balancePotion(int index) {
-        int largest = index;
-        int leftChild = left(index);
-        int rightChild = right(index);
-
-        if (leftChild < size() && ingredients[leftChild] > ingredients[largest])
-            largest = leftChild;
-
-        if (rightChild < size() && ingredients[rightChild] > ingredients[largest])
-            largest = rightChild;
-
-        if (largest != index) {
-            swap(ingredients[index], ingredients[largest]);
-            balancePotion(largest);
-        }
-    }
-
-public:
-    int parent(int i) { return (i - 1) / 2; }
-    int left(int i) { return (2 * i + 1); }
-    int right(int i) { return (2 * i + 2); }
-    int size() { return ingredients.size(); }
-
-    void addIngredient(int key) {
-        ingredients.push_back(key);
-        int index = size() - 1;
-        balancePotion(index);
-    }
-
-    void showPotion() {
-        for (int i : ingredients)
-            cout << i << " ";
-        cout << endl;
-    }
-};
 
 // Binary Tree Functions
 TreeNode* insertBinaryTree(TreeNode* root, int data) {
@@ -196,26 +157,6 @@ void postorder(TreeNode* root) {
     postorder(root->left);
     postorder(root->right);
     cout << root->data << " ";
-}
-
-// Magic Forest Functions
-TreeNode* addCreatureToForest(TreeNode* root, int data) {
-    if (!root) return new TreeNode(data);
-    queue<TreeNode*> q;
-    q.push(root);
-    while (!q.empty()) {
-        TreeNode* temp = q.front();
-        q.pop();
-        if (!temp->left) {
-            temp->left = new TreeNode(data);
-            break;
-        } else q.push(temp->left);
-        if (!temp->right) {
-            temp->right = new TreeNode(data);
-            break;
-        } else q.push(temp->right);
-    }
-    return root;
 }
 
 // Binary Search Tree Functions
@@ -293,7 +234,9 @@ int main() {
     BSTNode* bstRoot = nullptr;
     MinHeap minHeap;
     MaxHeap maxHeap;
+    int key, n;
     char cont;
+    vector<int> array;
     // welcome display
     /*cout << ",   .     .                   .\n 
             | . |     |                   |\n 
@@ -312,9 +255,11 @@ int main() {
                 cin >> choice;
                 if (choice == 1) {
                     do {
-                    cout << "Enter data to insert: ";
-                    for (int i = 0; i < 5; i++)
-                    {
+                    cout << "Enter the number of elements to insert into the binary tree: ";
+                    cin >> n;
+
+                    cout << "Enter " << n << " elements: ";
+                    for (int i = 0; i < n; i++) {
                         cin >> data;
                         binaryTreeRoot = insertBinaryTree(binaryTreeRoot, data);
                     }
@@ -338,9 +283,11 @@ int main() {
                 cin >> choice;
                 if (choice == 1) {
                     do {
-                    cout << "Enter data to insert: ";
-                    for (int i = 0; i < 5; i++)
-                    {
+                    cout << "Enter the number of elements to insert into the BST: ";
+                    cin >> n;
+
+                    cout << "Enter " << n << " elements: ";
+                    for (int i = 0; i < n; i++) {
                         cin >> data;
                         bstRoot = insertBST(bstRoot, data);
                     }
@@ -370,36 +317,44 @@ int main() {
                 }
                 break;
             case 3:
-                cout << "Heap Operations:\n1. Min-Heap: Insert\n1. Max-Heap: Insert\n3. Min-Heap\n4. Max-Heap\n5. Print Heap\n";
+                cout << "Heap Operations:\n1. Min-Heap: Insert\n1. Max-Heap: Insert\n3. Min-Heap Print\n4. Max-Heap Print\n5. Min-Heap Traverse\n6. Max-Heap Traverse\n";
                 cin >> choice;
                 if (choice == 1) {
                     do {
-                    cout << "Enter data to insert: ";
-                    for (int i = 0; i < 5; i++)
-                    {
+                    cout << "Enter the number of elements to insert into the min-heap: ";
+                    cin >> n;
+
+                    cout << "Enter " << n << " elements: ";
+                    for (int i = 0; i < n; i++) {
                         cin >> data;
                         minHeap.insert(data);
                     }
                     cout << "Do you want to insert more data? (y/n): ";
                     cin >> cont;
-                } while (cont == 'y' || cont == 'Y');
+                    } while (cont == 'y' || cont == 'Y');
                 } else if (choice == 2) {
                     do {
-                    cout << "Enter data to insert: ";
-                    for (int i = 0; i < 5; i++)
-                    {
+                    cout << "Enter the number of elements to insert into the max-heap: ";
+                    cin >> n;
+
+                    cout << "Enter " << n << " elements: ";
+                    for (int i = 0; i < n; i++) {
                         cin >> data;
                         maxHeap.insert(data);
                     }
                     cout << "Do you want to insert more data? (y/n): ";
                     cin >> cont;
-                } while (cont == 'y' || cont == 'Y');  
+                    } while (cont == 'y' || cont == 'Y');
+                    cin >> cont;
+
                 } else if (choice == 3) {
-                    minHeap.traverseMinHeap();
+                    minHeap.printHeap();
                 } else if (choice == 4) {
-                    minHeap.printHeap();
+                    maxHeap.printHeap();
                 } else if (choice == 5) {
-                    minHeap.printHeap();
+                    minHeap.traverseMinHeap();
+                } else if (choice == 6) {
+                    maxHeap.traverseMaxHeap();
                 }
                 break;
             default:
